@@ -1,0 +1,623 @@
+{
+  "source": "assets/source/spritesheet.png",
+  "format": "RGB565 little-endian (uint16 nativo) + mascara 1 bpp, MSB = pixel izquierdo, filas alineadas a byte",
+  "bbox_alpha_threshold": 16,
+  "mask_alpha_threshold": 128,
+  "resample": "vecino mas cercano, muestreo en el centro de la huella de cada pixel destino",
+  "car_scale": 0.13333,
+  "pivot_note": "El pivote es el punto del sprite que se ubica en la posicion logica del objeto (centro del auto).",
+  "sprites": {
+    "car_red": {
+      "w": 22,
+      "h": 34,
+      "pivot": [
+        11,
+        17
+      ],
+      "scale": 0.13333,
+      "opaque_bbox": [
+        1,
+        1,
+        20,
+        32
+      ],
+      "opaque_px": 473,
+      "source": {
+        "cell": [
+          0,
+          0,
+          315,
+          343
+        ],
+        "bbox": [
+          98,
+          72,
+          254,
+          311
+        ],
+        "bbox_size": [
+          157,
+          240
+        ],
+        "offset_from_cell_center": [
+          19.0,
+          20.5
+        ]
+      }
+    },
+    "car_red_left": {
+      "w": 26,
+      "h": 34,
+      "pivot": [
+        13,
+        17
+      ],
+      "scale": 0.13333,
+      "opaque_bbox": [
+        1,
+        2,
+        24,
+        31
+      ],
+      "opaque_px": 454,
+      "source": {
+        "cell": [
+          315,
+          0,
+          610,
+          343
+        ],
+        "bbox": [
+          405,
+          80,
+          582,
+          312
+        ],
+        "bbox_size": [
+          178,
+          233
+        ],
+        "offset_from_cell_center": [
+          31.5,
+          25.0
+        ],
+        "lean_px": -10.6
+      }
+    },
+    "car_red_right": {
+      "w": 26,
+      "h": 34,
+      "pivot": [
+        13,
+        17
+      ],
+      "scale": 0.13333,
+      "opaque_bbox": [
+        1,
+        2,
+        24,
+        31
+      ],
+      "opaque_px": 457,
+      "source": {
+        "cell": [
+          610,
+          0,
+          956,
+          343
+        ],
+        "bbox": [
+          691,
+          80,
+          869,
+          311
+        ],
+        "bbox_size": [
+          179,
+          232
+        ],
+        "offset_from_cell_center": [
+          -2.5,
+          24.5
+        ],
+        "lean_px": 11.2
+      }
+    },
+    "car_red_brake": {
+      "w": 22,
+      "h": 34,
+      "pivot": [
+        11,
+        17
+      ],
+      "scale": 0.13333,
+      "opaque_bbox": [
+        1,
+        1,
+        20,
+        32
+      ],
+      "opaque_px": 474,
+      "source": {
+        "cell": [
+          956,
+          0,
+          1254,
+          343
+        ],
+        "bbox": [
+          1000,
+          72,
+          1156,
+          311
+        ],
+        "bbox_size": [
+          157,
+          240
+        ],
+        "offset_from_cell_center": [
+          -26.5,
+          20.5
+        ]
+      }
+    },
+    "car_blue": {
+      "w": 22,
+      "h": 34,
+      "pivot": [
+        11,
+        17
+      ],
+      "scale": 0.13333,
+      "opaque_bbox": [
+        1,
+        1,
+        20,
+        32
+      ],
+      "opaque_px": 480,
+      "source": {
+        "cell": [
+          0,
+          343,
+          315,
+          657
+        ],
+        "bbox": [
+          98,
+          374,
+          254,
+          615
+        ],
+        "bbox_size": [
+          157,
+          242
+        ],
+        "offset_from_cell_center": [
+          19.0,
+          -5.0
+        ]
+      }
+    },
+    "car_blue_left": {
+      "w": 26,
+      "h": 34,
+      "pivot": [
+        13,
+        17
+      ],
+      "scale": 0.13333,
+      "opaque_bbox": [
+        1,
+        1,
+        24,
+        31
+      ],
+      "opaque_px": 477,
+      "source": {
+        "cell": [
+          315,
+          343,
+          610,
+          657
+        ],
+        "bbox": [
+          401,
+          384,
+          584,
+          618
+        ],
+        "bbox_size": [
+          184,
+          235
+        ],
+        "offset_from_cell_center": [
+          30.5,
+          1.5
+        ],
+        "lean_px": -10.8
+      }
+    },
+    "car_blue_right": {
+      "w": 26,
+      "h": 34,
+      "pivot": [
+        13,
+        17
+      ],
+      "scale": 0.13333,
+      "opaque_bbox": [
+        1,
+        1,
+        24,
+        32
+      ],
+      "opaque_px": 480,
+      "source": {
+        "cell": [
+          610,
+          343,
+          956,
+          657
+        ],
+        "bbox": [
+          690,
+          383,
+          873,
+          617
+        ],
+        "bbox_size": [
+          184,
+          235
+        ],
+        "offset_from_cell_center": [
+          -1.0,
+          0.5
+        ],
+        "lean_px": 11.8
+      }
+    },
+    "car_blue_brake": {
+      "w": 22,
+      "h": 34,
+      "pivot": [
+        11,
+        17
+      ],
+      "scale": 0.13333,
+      "opaque_bbox": [
+        1,
+        1,
+        20,
+        32
+      ],
+      "opaque_px": 485,
+      "source": {
+        "cell": [
+          956,
+          343,
+          1254,
+          657
+        ],
+        "bbox": [
+          1000,
+          374,
+          1157,
+          615
+        ],
+        "bbox_size": [
+          158,
+          242
+        ],
+        "offset_from_cell_center": [
+          -26.0,
+          -5.0
+        ]
+      }
+    },
+    "cone": {
+      "w": 16,
+      "h": 18,
+      "pivot": [
+        8,
+        9
+      ],
+      "scale": 0.09,
+      "opaque_bbox": [
+        1,
+        1,
+        14,
+        16
+      ],
+      "opaque_px": 124,
+      "source": {
+        "cell": [
+          0,
+          657,
+          315,
+          952
+        ],
+        "bbox": [
+          106,
+          722,
+          255,
+          894
+        ],
+        "bbox_size": [
+          150,
+          173
+        ],
+        "offset_from_cell_center": [
+          23.5,
+          4.0
+        ]
+      }
+    },
+    "tires": {
+      "w": 21,
+      "h": 18,
+      "pivot": [
+        10,
+        9
+      ],
+      "scale": 0.09,
+      "opaque_bbox": [
+        1,
+        1,
+        18,
+        16
+      ],
+      "opaque_px": 217,
+      "source": {
+        "cell": [
+          315,
+          657,
+          610,
+          952
+        ],
+        "bbox": [
+          375,
+          726,
+          584,
+          898
+        ],
+        "bbox_size": [
+          210,
+          173
+        ],
+        "offset_from_cell_center": [
+          17.5,
+          8.0
+        ]
+      }
+    },
+    "tree": {
+      "w": 30,
+      "h": 30,
+      "pivot": [
+        15,
+        15
+      ],
+      "scale": 0.125,
+      "opaque_bbox": [
+        1,
+        1,
+        28,
+        28
+      ],
+      "opaque_px": 565,
+      "source": {
+        "cell": [
+          610,
+          657,
+          956,
+          952
+        ],
+        "bbox": [
+          660,
+          697,
+          881,
+          920
+        ],
+        "bbox_size": [
+          222,
+          224
+        ],
+        "offset_from_cell_center": [
+          -12.0,
+          4.5
+        ]
+      }
+    },
+    "flag": {
+      "w": 21,
+      "h": 21,
+      "pivot": [
+        10,
+        10
+      ],
+      "scale": 0.09,
+      "opaque_bbox": [
+        1,
+        1,
+        18,
+        18
+      ],
+      "opaque_px": 194,
+      "source": {
+        "cell": [
+          956,
+          657,
+          1254,
+          952
+        ],
+        "bbox": [
+          990,
+          703,
+          1194,
+          906
+        ],
+        "bbox_size": [
+          205,
+          204
+        ],
+        "offset_from_cell_center": [
+          -12.5,
+          0.5
+        ]
+      }
+    },
+    "smoke_s": {
+      "w": 13,
+      "h": 11,
+      "pivot": [
+        6,
+        5
+      ],
+      "scale": 0.085,
+      "opaque_bbox": [
+        1,
+        1,
+        10,
+        8
+      ],
+      "opaque_px": 49,
+      "source": {
+        "cell": [
+          0,
+          952,
+          315,
+          1254
+        ],
+        "bbox": [
+          113,
+          1055,
+          235,
+          1159
+        ],
+        "bbox_size": [
+          123,
+          105
+        ],
+        "offset_from_cell_center": [
+          17.0,
+          4.5
+        ]
+      }
+    },
+    "smoke_m": {
+      "w": 18,
+      "h": 14,
+      "pivot": [
+        9,
+        7
+      ],
+      "scale": 0.085,
+      "opaque_bbox": [
+        1,
+        1,
+        16,
+        12
+      ],
+      "opaque_px": 112,
+      "source": {
+        "cell": [
+          315,
+          952,
+          610,
+          1254
+        ],
+        "bbox": [
+          393,
+          1030,
+          579,
+          1166
+        ],
+        "bbox_size": [
+          187,
+          137
+        ],
+        "offset_from_cell_center": [
+          24.0,
+          -4.5
+        ]
+      }
+    },
+    "smoke_l": {
+      "w": 27,
+      "h": 20,
+      "pivot": [
+        13,
+        10
+      ],
+      "scale": 0.085,
+      "opaque_bbox": [
+        1,
+        1,
+        24,
+        18
+      ],
+      "opaque_px": 236,
+      "source": {
+        "cell": [
+          610,
+          952,
+          956,
+          1254
+        ],
+        "bbox": [
+          637,
+          996,
+          923,
+          1206
+        ],
+        "bbox_size": [
+          287,
+          211
+        ],
+        "offset_from_cell_center": [
+          -2.5,
+          -1.5
+        ]
+      }
+    },
+    "spark": {
+      "w": 17,
+      "h": 18,
+      "pivot": [
+        8,
+        9
+      ],
+      "scale": 0.075,
+      "opaque_bbox": [
+        1,
+        1,
+        14,
+        15
+      ],
+      "opaque_px": 89,
+      "source": {
+        "cell": [
+          956,
+          952,
+          1254,
+          1254
+        ],
+        "bbox": [
+          991,
+          984,
+          1184,
+          1188
+        ],
+        "bbox_size": [
+          194,
+          205
+        ],
+        "offset_from_cell_center": [
+          -17.0,
+          -16.5
+        ]
+      }
+    }
+  }
+}
