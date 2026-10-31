@@ -2,8 +2,9 @@
 
 Juego de carreras arcade de vista cenital para **dos Waveshare ESP32-S3-LCD-1.47B**, una por
 jugador. Se maneja inclinando la placa, el auto acelera solo y las dos placas se conectan
-directamente por **ESP-NOW** (sin router). Tres vueltas, el mismo circuito y los mismos
-obstaculos para ambos; el anfitrion decide la carrera.
+directamente por **ESP-NOW** (sin router). Tres vueltas y el mismo circuito para ambos, con
+obstaculos opcionales (`TRACK_OBSTACLES`, ver [Ajustes](#ajustes-racewifisrcconfigh)); el
+anfitrion decide la carrera. Cambios por version en [CHANGELOG.md](CHANGELOG.md).
 
 | Sala (cliente) | Cuenta compartida | Carrera (anfitrion) | Carrera (cliente) | Sin conexion |
 |---|---|---|---|---|
@@ -14,7 +15,8 @@ obstaculos para ambos; el anfitrion decide la carrera.
 | ![](docs/capturas/13_choque_anfitrion.png) | ![](docs/capturas/14_flecha_anfitrion.png) | ![](docs/capturas/15_flecha_cliente.png) | ![](docs/capturas/10_resultados_cliente.png) | ![](docs/capturas/31_diag_sensor.png) |
 
 Las capturas salen del renderizador real del firmware ejecutado en la PC con una plataforma
-simulada (ver [Pruebas en PC](#pruebas-en-pc)); no son fotos de la pantalla fisica.
+simulada (ver [Pruebas en PC](#pruebas-en-pc)); no son fotos de la pantalla fisica. Estan
+tomadas con los obstaculos activados (`TRACK_OBSTACLES 1`).
 
 ---
 
@@ -208,7 +210,7 @@ Hacerlas en este orden. Cada etapa depende de la anterior.
 
 1. Cargar y abrir el monitor serie. Esperado:
    `[hw] lcd=1 (40000000 Hz) imu=1 addr=0x6B psram=8388608` y
-   `[app] v0.1.0 imu=1 net=1 eje=-1 ...` (`eje=-1` = todavia sin detectar).
+   `[app] v0.2.0 imu=1 net=1 eje=-1 ...` (`eje=-1` = todavia sin detectar).
 2. Pantalla de inicio: "RACE WIFI" con los dos autos, "SENSOR OK" y "ESP-NOW OK".
 3. En "BUSCANDO RIVAL", pulsacion **larga** -> modo diagnostico.
 4. **1/6 PANTALLA** (![](docs/capturas/30_diag_pantalla.png)):
@@ -242,8 +244,9 @@ Si algo falla:
 
 1. Salir del diagnostico (muy larga). En "BUSCANDO RIVAL", pulsacion **corta** -> practica.
 2. Comprobar: el auto arranca solo tras 3-2-1; inclinar a la derecha lo lleva a la derecha;
-   en el pasto echa humo y frena; un cono lo frena, parpadea y recupera en ~2 s sin quedar
-   trabado; la vuelta cambia al cruzar la meta; a las 3 vueltas muestra el tiempo.
+   en el pasto echa humo y frena; con `TRACK_OBSTACLES 1`, un cono lo frena, parpadea y
+   recupera en ~2 s sin quedar trabado (con 0 no hay conos ni neumaticos en la pista); la
+   vuelta cambia al cruzar la meta; a las 3 vueltas muestra el tiempo.
 3. Ajustar sensibilidad si hace falta (pagina 3 del diagnostico o `TILT_MAX_DEG`).
 
 ### Etapa 3: dos placas
@@ -290,9 +293,14 @@ Los valores iniciales son los pedidos: simulacion 60 Hz, dibujo 30 FPS y red 20 
 | Ritmos | `SIM_HZ` (fijo en 60), `RENDER_FPS`, `NET_HZ`, `IMU_HZ` |
 | Inclinacion | `TILT_DEADZONE_DEG` (3), `TILT_MAX_DEG` (25), `TILT_FILTER_MS` (70), calibracion |
 | Red | `ESPNOW_CHANNEL`, tiempos de busqueda / perdida, interpolacion y reconciliacion |
-| Carrera | `RACE_LAPS`, cuentas regresivas, espera al segundo |
+| Carrera | `RACE_LAPS`, `TRACK_OBSTACLES`, cuentas regresivas, espera al segundo |
 | Apagado | `SLEEP_IDLE_MS` (5 min sin uso), `SLEEP_SCREEN_MS` |
 | Fisica | velocidad maxima, aceleracion, pasto, choques, penalizaciones |
+
+**Obstaculos**: `TRACK_OBSTACLES 0` (por defecto) deja la pista sin conos ni neumaticos;
+`TRACK_OBSTACLES 1` los activa. Es una opcion de compilacion: las **dos placas** deben
+tener el mismo valor, porque el cliente predice su auto con los obstaculos que tiene
+cargados y, si no coinciden con los del anfitrion, se ven tirones y correcciones.
 
 La sensibilidad elegida en el diagnostico y el eje detectado se guardan en NVS (espacio
 `racewifi`). Para borrarlos: `pio run -t erase` y volver a cargar.
@@ -406,7 +414,8 @@ escenarios completos: dos placas con relojes distintos, latencia y 3 % de perdid
 salida voluntaria, re-emparejamiento), una placa que se reinicia en carrera, tres placas
 buscando a la vez (se forma un solo par con roles distintos), practica solo, diagnostico y
 apagado (BOOT 3 s, sola a los 5 minutos sin uso, nunca en plena carrera).
-Deja capturas en `build/host_out/`.
+Deja capturas en `build/host_out/`. Con `TRACK_OBSTACLES 0` no corren las verificaciones de
+cada obstaculo ni sale la captura del choque.
 
 ---
 

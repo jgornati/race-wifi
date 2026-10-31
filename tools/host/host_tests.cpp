@@ -368,6 +368,7 @@ static void testTwoBoards() {
     std::vector<float> errS, errX;
     w.probe = [&] {
         if (A->app.race().phase != Phase::Race || A->app.race().paused || !B->app.link().up()) return;
+        if (w.m.blackout) return;  // en el corte el cliente no tiene datos: no es error de prediccion
         if (A->app.race().ticks() == 0) return;  // instante de largada: todavia en la grilla
         const Car& truth = A->app.race().cars[1];
         const Car& pred = B->app.client().me;

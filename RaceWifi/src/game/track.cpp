@@ -91,6 +91,6 @@ float Track::railInner() const { return kHalfWidth + kGrassMargin + CAR_HALF_W; 
 
 float Track::maxOffset() const { return kHalfWidth + kGrassMargin; }
 
-int Track::obstacleCount() const { return kObstacleCount; }
+int Track::obstacleCount() const { return TRACK_OBSTACLES ? kObstacleCount : 0; }
 
 const Obstacle& Track::obstacle(int i) const { return kObstacles[i]; }

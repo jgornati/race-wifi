@@ -3,7 +3,7 @@
 #pragma once
 #include <stdint.h>
 
-#define FW_VERSION "0.1.0"
+#define FW_VERSION "0.2.0"
 
 // ---------------------------------------------------------------- pantalla
 #define LCD_W 172
@@ -68,6 +68,7 @@
 #define COUNTDOWN_MS 3000
 #define RESUME_COUNTDOWN_MS 2000
 #define FINISH_GRACE_MS 15000     // tiempo que espera al segundo tras la llegada del primero
+#define TRACK_OBSTACLES 0         // 1: conos y neumaticos en la pista (ambas placas igual)
 #define PX_PER_METER 8.0f         // solo para mostrar distancias
 
 // ---------------------------------------------------------------- fisica (px, s)
