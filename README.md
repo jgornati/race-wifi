@@ -26,13 +26,11 @@ simulada (ver [Pruebas en PC](#pruebas-en-pc)); no son fotos de la pantalla fisi
 | Compila con Arduino CLI 1.5.1 + core `esp32:esp32@3.3.12` (el mismo que usa Arduino IDE) | ejecutado | OK, sin warnings propios |
 | Logica de juego, red, prediccion, pantallas y graficos | ejecutado en PC (`tools/host`), 436 verificaciones | OK |
 | Conversor de sprites reproducible | ejecutado dos veces, mismo hash | OK |
-| **Todo lo que depende del hardware real** | **no probado: no habia placas conectadas** | **pendiente** |
+| Funciona en dos placas reales | probado a mano: emparejamiento, inclinacion y carreras completas entre las dos placas | OK |
 
-Pendiente de prueba fisica (no afirmo que funcione hasta que lo pruebes): arranque del
-ST7789 con este init, colores/orientacion/offset reales, lectura del QMI8658, ejes reales del
-chip, boton BOOT, ESP-NOW entre dos placas reales (alcance, perdidas, RTT), FPS y carga de CPU
-reales, comportamiento de la bateria. El [plan de pruebas](#plan-de-pruebas-en-hardware)
-cubre cada punto en orden.
+Los numeros de abajo son de la simulacion en PC. En las placas reales, el RTT, el RSSI y los
+FPS se leen en el modo diagnostico (paginas RED y RENDIMIENTO); el
+[plan de pruebas](#plan-de-pruebas-en-hardware) explica como.
 
 Resultados medidos en la simulacion (dos placas con relojes distintos, 1,5-5 ms de latencia
 y 3 % de perdida de paquetes):
@@ -244,8 +242,13 @@ Si algo falla:
    "SIN CONEXION" sin dibujar al rival; la carrera queda en pausa. Al volver, re-empareja
    (si fue reset) o reanuda con cuenta de 2 s (si fue un corte breve).
 7. Llegada: ambas muestran el mismo ganador y los mismos tiempos. Revancha con BOOT en ambas.
-8. Alcance: con ambas en el diagnostico, pagina 6, pulsacion larga en las dos para que se
-   emparejen ahi; alejarlas y mirar RSSI, RTT, perdidas y paquetes viejos.
+8. Alcance y RTT: al diagnostico solo se entra desde "BUSCANDO RIVAL", y con las dos
+   prendidas se emparejan apenas arrancan. Por eso: prender **una sola**, pulsacion larga
+   (~1 s, soltar antes de 2,5 s) -> diagnostico; recien ahi prender la otra (como la
+   primera ya no busca, se queda en "BUSCANDO RIVAL") y hacer lo mismo. En las dos ir a la
+   pagina 6 y pulsacion larga para que se emparejen ahi. El RTT lo mide la placa que dice
+   ROL CLIENTE (en la anfitriona figura 0). Alejarlas y mirar RSSI, RTT, perdidas y
+   paquetes viejos.
 
 ### Medir y ajustar
 
@@ -389,7 +392,6 @@ Deja capturas en `build/host_out/`.
 
 ## Limitaciones conocidas
 
-- No probado en hardware (ver arriba).
 - Sin pin TE: puede verse algo de tearing en movimiento rapido.
 - La prediccion del cliente no puede anticipar los choques entre autos (los decide el
   anfitrion): se corrigen en 50-100 ms.
