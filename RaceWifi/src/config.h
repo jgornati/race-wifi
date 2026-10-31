@@ -40,7 +40,12 @@
 // ---------------------------------------------------------------- boton BOOT
 #define BTN_DEBOUNCE_MS 25
 #define BTN_CLICK_MAX_MS 600      // pulsacion corta
-#define BTN_VLONG_MS 2500         // pulsacion muy larga (salir / desconectar)
+#define BTN_VLONG_MS 2500         // pulsacion muy larga (salir / desconectar / apagar)
+
+// ---------------------------------------------------------------- apagado
+// La placa no tiene interruptor: se "apaga" durmiendola (BOOT la despierta).
+#define SLEEP_IDLE_MS (5UL * 60 * 1000)  // sin uso (ni carrera ni BOOT) se duerme sola
+#define SLEEP_SCREEN_MS 1500             // cuanto se ve "CHAU" antes de dormir
 
 // ---------------------------------------------------------------- red ESP-NOW
 #define ESPNOW_CHANNEL 1          // ambas placas deben usar el mismo canal

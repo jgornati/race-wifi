@@ -74,6 +74,11 @@ bool begin(uint8_t ch) {
     return addPeer(kBroadcast);
 }
 
+void end() {
+    esp_now_deinit();
+    WiFi.mode(WIFI_OFF);
+}
+
 void myMac(uint8_t mac[6]) { esp_wifi_get_mac(WIFI_IF_STA, mac); }
 
 bool setPeer(const uint8_t mac[6]) {

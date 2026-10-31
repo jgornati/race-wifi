@@ -51,6 +51,10 @@ public:
     // boton (nivel crudo; el antirrebote es portable)
     virtual bool buttonDown() = 0;
 
+    // La placa no tiene interruptor: "apagar" es dormirla. Apaga pantalla, sensor y red y
+    // entra en sueno profundo; BOOT la despierta y el firmware arranca de cero. No vuelve.
+    virtual void powerOff() = 0;
+
     // red
     virtual bool netBegin(uint8_t channel) = 0;
     virtual void netMyMac(uint8_t mac[6]) = 0;

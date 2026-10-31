@@ -26,6 +26,7 @@ void App::compose(uint32_t now) {
         case Screen::AxisSetup: composeAxis(now); break;
         case Screen::Game: composeGame(now); break;
         case Screen::Diag: composeDiag(now); break;
+        case Screen::Sleep: composeSleep(now); break;
     }
 }
 
@@ -82,11 +83,19 @@ void App::composeSearch(uint32_t now) {
     frame_.textC(162, "LAS DOS PLACAS", col::GREY);
     if (!p_->imuPresent()) frame_.textC(196, "SIN SENSOR!", col::RED, 2);
 
-    panel(232, 64);
-    frame_.textC(240, "BOOT CORTO:", col::WHITE);
-    frame_.textC(252, "PRACTICA SOLO", col::YELLOW);
-    frame_.textC(268, "BOOT LARGO:", col::WHITE);
-    frame_.textC(280, "DIAGNOSTICO", col::YELLOW);
+    panel(220, 92);
+    frame_.textC(228, "BOOT CORTO:", col::WHITE);
+    frame_.textC(240, "PRACTICA SOLO", col::YELLOW);
+    frame_.textC(256, "BOOT LARGO:", col::WHITE);
+    frame_.textC(268, "DIAGNOSTICO", col::YELLOW);
+    frame_.textC(284, "BOOT 3 SEGUNDOS:", col::WHITE);
+    frame_.textC(296, "APAGAR", col::YELLOW);
+}
+
+void App::composeSleep(uint32_t now) {
+    frame_.setSolid(col::DARK);
+    frame_.textC(130, "CHAU", col::WHITE, 4);
+    frame_.textC(180, "BOOT PARA PRENDER", col::GREY);
 }
 
 void App::composeCalibrate(uint32_t now) {

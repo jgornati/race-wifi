@@ -8,6 +8,7 @@
 namespace imu {
 bool begin();          // detecta (0x6B / 0x6A, WHO_AM_I = 0x05) y configura
 void startTask();
+void powerDown();      // para la tarea y apaga el sensor (al dormir la placa)
 bool latest(ImuSample& out);
 uint8_t address();
 uint8_t whoAmI();

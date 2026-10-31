@@ -3,6 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+#include <atomic>
+
 #include "../config.h"
 #include "../hw/pins.h"
 
@@ -27,6 +29,8 @@ uint8_t s_who = 0;
 portMUX_TYPE s_mux = portMUX_INITIALIZER_UNLOCKED;
 ImuSample s_latest = {};
 bool s_has = false;
+std::atomic<bool> s_stopReq{false};
+std::atomic<bool> s_running{false};
 
 bool writeReg(uint8_t reg, uint8_t v) {
     Wire.beginTransmission(s_addr);
@@ -63,6 +67,11 @@ void task(void*) {
     const TickType_t period = pdMS_TO_TICKS(1000 / IMU_HZ) ? pdMS_TO_TICKS(1000 / IMU_HZ) : 1;
     uint32_t count = 0;
     for (;;) {
+        // se detiene entre lecturas, nunca con el bus I2C tomado
+        if (s_stopReq) {
+            s_running = false;
+            vTaskDelete(nullptr);
+        }
         ImuSample s;
         if (readSample(s)) {
             s.tMs = millis();
@@ -110,7 +119,17 @@ bool begin() {
     return ok;
 }
 
-void startTask() { xTaskCreatePinnedToCore(task, "imu", 3072, nullptr, 3, nullptr, 0); }
+void startTask() {
+    s_running = true;
+    xTaskCreatePinnedToCore(task, "imu", 3072, nullptr, 3, nullptr, 0);
+}
+
+void powerDown() {
+    s_stopReq = true;
+    for (int i = 0; i < 50 && s_running; i++) delay(1);
+    writeReg(REG_CTRL7, 0x00);  // acelerometro y giroscopo apagados
+    writeReg(REG_CTRL1, 0x41);  // bit 0: apaga tambien el oscilador interno
+}
 
 bool latest(ImuSample& out) {
     portENTER_CRITICAL(&s_mux);

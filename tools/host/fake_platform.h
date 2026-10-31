@@ -49,6 +49,10 @@ public:
     uint8_t imuWhoAmI() override { return 0x05; }
     bool imuLatest(ImuSample& out) override;
     bool buttonDown() override;
+    void powerOff() override {
+        poweredOff = true;
+        online = false;  // dormida: no corre ni recibe
+    }
     bool netBegin(uint8_t channel) override {
         channel_ = channel;
         return true;
@@ -84,6 +88,7 @@ public:
     std::string name;
     uint8_t mac[6];
     bool online = true;          // false = placa "apagada" (no recibe ni manda)
+    bool poweredOff = false;     // el firmware la mando a dormir
     int32_t clockSkewMs = 0;     // cada placa tiene su propio reloj
     float tiltDeg = 0;           // inclinacion a la derecha que aplica el "jugador"
     float noiseG = 0.004f;

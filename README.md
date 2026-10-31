@@ -24,9 +24,10 @@ simulada (ver [Pruebas en PC](#pruebas-en-pc)); no son fotos de la pantalla fisi
 |---|---|---|
 | Compila para la placa con PlatformIO (pioarduino 55.03.312-1, Arduino-ESP32 3.3.12, ESP-IDF 5.5.5) | ejecutado | OK, sin warnings propios. RAM estatica 58 KB (17.9 %), flash 1.0 MB |
 | Compila con Arduino CLI 1.5.1 + core `esp32:esp32@3.3.12` (el mismo que usa Arduino IDE) | ejecutado | OK, sin warnings propios |
-| Logica de juego, red, prediccion, pantallas y graficos | ejecutado en PC (`tools/host`), 436 verificaciones | OK |
+| Logica de juego, red, prediccion, pantallas y graficos | ejecutado en PC (`tools/host`), 444 verificaciones | OK |
 | Conversor de sprites reproducible | ejecutado dos veces, mismo hash | OK |
 | Funciona en dos placas reales | probado a mano: emparejamiento, inclinacion y carreras completas entre las dos placas | OK |
+| Apagado por software ([ver abajo](#bateria-y-apagado)) | compila y probado en PC | falta probarlo en la placa: luz apagada, BOOT la despierta, consumo |
 
 Los numeros de abajo son de la simulacion en PC. En las placas reales, el RTT, el RSSI y los
 FPS se leen en el modo diagnostico (paginas RED y RENDIMIENTO); el
@@ -174,11 +175,28 @@ flecha de su color con la distancia en metros.
 |---|---|---|---|---|---|---|
 | Corto (< 0,6 s) | practica solo | listo / cancelar | - | revancha | buscar rival | pagina siguiente |
 | Largo (0,6-2,5 s, al soltar) | diagnostico | recalibrar | - | recalibrar | buscar rival | accion de la pagina |
-| Muy largo (2,5 s) | - | salir | salir | salir | - | salir |
+| Muy largo (2,5 s) | apagar | salir | salir | salir | - | salir |
 
 "Salir" envia un aviso al rival, que muestra "EL RIVAL SALIO" y espera a que su jugador
 apriete BOOT para volver a emparejar. Si una placa se reinicia sin avisar, la otra detecta
 su busqueda y re-empareja sola.
+
+### Bateria y apagado
+
+La placa no tiene interruptor de encendido: con una bateria conectada queda prendida. Por
+eso el firmware la "apaga" durmiendola (sueno profundo del ESP32-S3):
+
+- **Apagar:** en "BUSCANDO RIVAL", mantener BOOT ~3 s. Aparece "CHAU" y al soltar el boton
+  se apagan pantalla, luz, sensor y WiFi. Desde una carrera: BOOT muy largo para salir y
+  otra vez para apagar.
+- **Prender:** apretar BOOT. Arranca de cero, como recien encendida.
+- **Sola:** si pasan 5 minutos sin carrera y sin tocar BOOT, se duerme
+  (`SLEEP_IDLE_MS`). Si la otra placa estaba conectada, ve "EL RIVAL SALIO".
+
+Dormida igual consume algo: el LED RGB, el regulador y el cargador de la bateria siguen
+alimentados (no esta medido). Para guardarla semanas, un interruptor en el cable rojo de la
+bateria es la unica forma de cortarla del todo (con el interruptor abierto tampoco carga
+por USB).
 
 ---
 
@@ -273,6 +291,7 @@ Los valores iniciales son los pedidos: simulacion 60 Hz, dibujo 30 FPS y red 20 
 | Inclinacion | `TILT_DEADZONE_DEG` (3), `TILT_MAX_DEG` (25), `TILT_FILTER_MS` (70), calibracion |
 | Red | `ESPNOW_CHANNEL`, tiempos de busqueda / perdida, interpolacion y reconciliacion |
 | Carrera | `RACE_LAPS`, cuentas regresivas, espera al segundo |
+| Apagado | `SLEEP_IDLE_MS` (5 min sin uso), `SLEEP_SCREEN_MS` |
 | Fisica | velocidad maxima, aceleracion, pasto, choques, penalizaciones |
 
 La sensibilidad elegida en el diagnostico y el eje detectado se guardan en NVS (espacio
@@ -385,7 +404,8 @@ deteccion de eje, gestos del boton, protocolo, que ningun choque deje el auto tr
 escenarios completos: dos placas con relojes distintos, latencia y 3 % de perdida
 (emparejamiento, calibracion, cuenta compartida, carrera completa, corte de 3 s, revancha,
 salida voluntaria, re-emparejamiento), una placa que se reinicia en carrera, tres placas
-buscando a la vez (se forma un solo par con roles distintos), practica solo y diagnostico.
+buscando a la vez (se forma un solo par con roles distintos), practica solo, diagnostico y
+apagado (BOOT 3 s, sola a los 5 minutos sin uso, nunca en plena carrera).
 Deja capturas en `build/host_out/`.
 
 ---

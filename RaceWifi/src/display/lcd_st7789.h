@@ -11,4 +11,7 @@ bool slotFree(int slot);
 void push(int slot, int y0, int lines);
 bool idle();
 uint32_t spiHz();
+// Para dormir: luz apagada, panel en reposo (SLPIN) y la luz retenida en bajo durante el
+// sueno profundo. Bloquea unos ms; solo se usa al apagar.
+void sleep();
 }  // namespace lcd

@@ -14,6 +14,7 @@ public:
     uint8_t imuWhoAmI() override;
     bool imuLatest(ImuSample& out) override;
     bool buttonDown() override;
+    void powerOff() override;
     bool netBegin(uint8_t channel) override;
     void netMyMac(uint8_t mac[6]) override;
     bool netSetPeer(const uint8_t mac[6]) override;

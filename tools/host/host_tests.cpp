@@ -590,6 +590,53 @@ static void testDiag() {
     CHECK(w.until([&] { return D->app.screen() == Screen::Search; }, 4000), "sale con muy largo");
 }
 
+static void testSleep() {
+    printf("[apagado]\n");
+    {
+        World w;
+        FakeBoard* S = makeBoard(w, "SUENO", 0x55, 0);
+        S->app.begin(S);
+        w.run(1400);
+        S->pressNow(3000);
+        CHECK(w.until([&] { return S->app.screen() == Screen::Sleep; }, 3000), "BOOT muy largo buscando: apagar");
+        w.shot(S, "36_apagando");
+        CHECK(!S->poweredOff, "espera que se suelte BOOT y que se vea CHAU");
+        CHECK(w.until([&] { return S->poweredOff; }, 3000), "se duerme");
+        CHECK(S->app.link().state == LinkState::Off, "red apagada");
+    }
+    {
+        // olvidada prendida: se duerme sola
+        World w;
+        FakeBoard* T = makeBoard(w, "OLVIDO", 0x56, 0);
+        T->app.begin(T);
+        int64_t t0 = g_nowUs;
+        CHECK(w.until([&] { return T->poweredOff; }, SLEEP_IDLE_MS + 5000), "se apaga sola sin uso");
+        double secs = (g_nowUs - t0) / 1e6;
+        printf("  sin uso se durmio a los %.0f s\n", secs);
+        CHECK(secs >= SLEEP_IDLE_MS / 1000.0 && secs < SLEEP_IDLE_MS / 1000.0 + 5, "momento del apagado %.1f s", secs);
+    }
+    {
+        // en carrera no se duerme aunque nadie toque BOOT
+        World w;
+        FakeBoard* R = makeBoard(w, "CORRE", 0x57, 0);
+        R->app.begin(R);
+        w.bots = {Bot{R, 0}};
+        w.run(1400);
+        R->pressNow(80);
+        w.until([&] { return R->app.screen() == Screen::Game; }, 6000);
+        R->pressNow(80);  // ultimo BOOT: de aca en mas solo corre
+        int64_t tPress = g_nowUs;
+        w.until([&] { return R->app.race().phase == Phase::Race; }, 5000);
+        bool slept = w.until([&] { return R->poweredOff; }, SLEEP_IDLE_MS + 200000);
+        double after = (g_nowUs - tPress) / 1e6;
+        printf("  carrera de %.0f s sin tocar BOOT; se durmio %.0f s despues del ultimo BOOT\n",
+               R->app.race().cars[0].finishMs / 1000.0, after);
+        CHECK(slept && R->app.race().cars[0].finished, "termina la carrera y despues se duerme");
+        CHECK(after >= SLEEP_IDLE_MS / 1000.0 + R->app.race().cars[0].finishMs / 1000.0,
+              "en carrera no cuenta como inactividad (%.0f s)", after);
+    }
+}
+
 int main(int argc, char** argv) {
     if (argc > 1) g_out = argv[1];
     g_track.build();
@@ -604,6 +651,7 @@ int main(int argc, char** argv) {
     testThreeBoards();
     testSolo();
     testDiag();
+    testSleep();
     printf("\n%d verificaciones OK, %d fallas\n", g_pass, g_fail);
     return g_fail ? 1 : 0;
 }

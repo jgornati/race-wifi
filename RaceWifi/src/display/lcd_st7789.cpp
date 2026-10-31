@@ -5,6 +5,7 @@
 
 #include "../config.h"
 #include "../hw/pins.h"
+#include "driver/gpio.h"
 #include "driver/spi_master.h"
 #include "esp_heap_caps.h"
 #include "soc/gpio_reg.h"
@@ -84,6 +85,9 @@ namespace lcd {
 
 bool begin(uint32_t hz) {
     s_hz = hz;
+    // si viene de un sueno profundo, la luz quedo retenida en bajo (ver sleep())
+    gpio_hold_dis((gpio_num_t)PIN_LCD_BL);
+    gpio_deep_sleep_hold_dis();
     pinMode(PIN_LCD_DC, OUTPUT);
     pinMode(PIN_LCD_RST, OUTPUT);
 
@@ -174,6 +178,20 @@ bool begin(uint32_t hz) {
 void backlight(uint8_t pct) {
     if (pct > 100) pct = 100;
     ledcWrite(PIN_LCD_BL, (uint32_t)pct * 1023 / 100);
+}
+
+void sleep() {
+    while (!idle()) {
+    }  // termina la tira que este saliendo
+    ledcDetach(PIN_LCD_BL);
+    pinMode(PIN_LCD_BL, OUTPUT);
+    digitalWrite(PIN_LCD_BL, LOW);
+    sendCmd(0x28);  // display off
+    sendCmd(0x10);  // sleep in
+    // GPIO46 no es un pin RTC: sin retencion quedaria flotando durante el sueno profundo
+    // y el MOSFET de la luz podria encenderse.
+    gpio_hold_en((gpio_num_t)PIN_LCD_BL);
+    gpio_deep_sleep_hold_en();
 }
 
 uint16_t* buffer(int slot) { return s_buf[slot]; }

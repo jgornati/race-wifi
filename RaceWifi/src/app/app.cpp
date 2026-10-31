@@ -42,6 +42,7 @@ void App::begin(Platform* p) {
     nextFrameMs_ = now;
     nextNetMs_ = now;
     simWindowMs_ = now;
+    lastActivityMs_ = now;
     setScreen(Screen::Boot, now);
 
     char buf[128];
@@ -145,6 +146,15 @@ void App::tick(float dt, uint32_t now) {
             break;
     }
 
+    // Sin interruptor de encendido: si nadie la usa, se duerme sola. Al dormir espera a
+    // que se suelte BOOT (si no, el mismo boton la despertaria enseguida).
+    Phase ph = phase();
+    bool racing = screen_ == Screen::Game && (solo_ || link_.up()) && (ph == Phase::Countdown || ph == Phase::Race);
+    if (racing || screen_ == Screen::Calibrate || screen_ == Screen::AxisSetup || screen_ == Screen::Diag)
+        lastActivityMs_ = now;
+    if (screen_ != Screen::Sleep && now - lastActivityMs_ >= SLEEP_IDLE_MS) goSleep(now);
+    if (screen_ == Screen::Sleep && now - screenSince_ >= SLEEP_SCREEN_MS && !button_.down()) p_->powerOff();
+
     if (link_.active() && link_.role == Role::Host) {
         hostTick(dt, now);
     } else if (link_.active() && link_.role == Role::Client) {
@@ -228,6 +238,13 @@ void App::goDiag(uint32_t now) {
     p_->log("[app] modo diagnostico");
 }
 
+void App::goSleep(uint32_t now) {
+    link_.stop(now);  // si estaba conectada, la otra placa recibe el aviso de salida
+    solo_ = false;
+    setScreen(Screen::Sleep, now);
+    p_->log("[app] apagando");
+}
+
 void App::onConnected(uint32_t now) {
     cv_ = ClientView();
     clientReady_ = clientRematch_ = false;
@@ -283,19 +300,22 @@ void App::handleLinkEvents(uint32_t now) {
             stateDirty_ = true;
         }
     }
-    if (e.peerRestarted && screen_ != Screen::Diag) {
+    if (e.peerRestarted && screen_ != Screen::Diag && screen_ != Screen::Sleep) {
         p_->log("[net] el rival volvio a buscar: re-emparejando");
         goSearch(now);
     }
 }
 
 void App::onButton(BtnEvent ev, uint32_t now) {
+    lastActivityMs_ = now;
     switch (screen_) {
         case Screen::Boot:
+        case Screen::Sleep:
             break;
         case Screen::Search:
             if (ev == BtnEvent::Click) goSolo(now);
             else if (ev == BtnEvent::Long) goDiag(now);
+            else if (ev == BtnEvent::VeryLong) goSleep(now);
             break;
         case Screen::Calibrate:
         case Screen::AxisSetup:

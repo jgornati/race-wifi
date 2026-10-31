@@ -8,6 +8,7 @@
 
 namespace espnow {
 bool begin(uint8_t channel);
+void end();  // apaga ESP-NOW y el WiFi (al dormir la placa)
 void myMac(uint8_t mac[6]);
 bool setPeer(const uint8_t mac[6]);
 void clearPeer();

@@ -28,5 +28,5 @@
 #define PIN_BOOT_BTN 0
 
 // Otros recursos de la placa que este proyecto no usa
-#define PIN_WS2812_LED 38    // WS2812B (no usado)
+#define PIN_WS2812_LED 38    // WS2812B (solo se apaga antes de dormir)
 #define PIN_BAT_ADC 1        // divisor 200k/100k

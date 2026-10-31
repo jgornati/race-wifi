@@ -2,8 +2,10 @@
 
 #include <Arduino.h>
 #include <Preferences.h>
+#include <driver/rtc_io.h>
 #include <esp_heap_caps.h>
 #include <esp_random.h>
+#include <esp_sleep.h>
 #include <esp_timer.h>
 
 #include "../config.h"
@@ -37,6 +39,20 @@ uint8_t Esp32Platform::imuWhoAmI() { return imu::whoAmI(); }
 bool Esp32Platform::imuLatest(ImuSample& out) { return imuOk_ && imu::latest(out); }
 
 bool Esp32Platform::buttonDown() { return digitalRead(PIN_BOOT_BTN) == LOW; }
+
+void Esp32Platform::powerOff() {
+    log("[hw] apagando (sueno profundo); BOOT la vuelve a prender");
+    delay(20);  // que salga el log
+    espnow::end();
+    if (imuOk_) imu::powerDown();
+    if (lcdOk_) lcd::sleep();
+    rgbLedWrite(PIN_WS2812_LED, 0, 0, 0);  // por si otro firmware lo dejo prendido
+    // BOOT (GPIO0, pin RTC) despierta; tiene pull-up de 10k en la placa y se suma el interno
+    rtc_gpio_pullup_en(GPIO_NUM_0);
+    rtc_gpio_pulldown_dis(GPIO_NUM_0);
+    esp_sleep_enable_ext0_wakeup(GPIO_NUM_0, 0);
+    esp_deep_sleep_start();
+}
 
 bool Esp32Platform::netBegin(uint8_t channel) { return espnow::begin(channel); }
 void Esp32Platform::netMyMac(uint8_t mac[6]) { espnow::myMac(mac); }
